@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Argus Intelligence Dossier</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js?v=2" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">A</span><span>ARGUS</span><small>INTELLIGENCE OS</small></div>
+      <div class="workspace-label">WORKSPACE <span>● LIVE</span></div>
+      <nav class="nav" aria-label="Primary navigation">
+        <button class="nav-item active" data-view="dossier"><span>◈</span> Intelligence dossier <b>01</b></button>
+        <button class="nav-item" data-view="trace"><span>⌁</span> Agent trace <b>04</b></button>
+        <button class="nav-item" data-view="sources"><span>⊙</span> Source registry <b>12</b></button>
+      </nav>
+      <div class="agent-card">
+        <div class="agent-heading"><span class="pulse"></span> ARGUS / analyst</div>
+        <p>Autonomous financial research agent</p>
+        <div class="agent-meta"><span>MODEL</span><strong>q4-finance-7b</strong></div>
+        <div class="agent-meta"><span>LATENCY</span><strong>1.84s</strong></div>
+      </div>
+      <div class="sidebar-footer"><span class="status-dot"></span> Edge node online <span class="version">v0.4.2</span></div>
+    </aside>
+
+    <section class="content">
+      <header class="topbar">
+        <div class="breadcrumb"><span>WORKSPACE</span><i>/</i><strong>FINANCIAL INTELLIGENCE</strong></div>
+        <form class="ticker-search" id="ticker-form"><label for="ticker">TICKER</label><input id="ticker" name="ticker" value="NVDA" maxlength="5" autocomplete="off"><button type="submit">Analyze ↗</button></form>
+        <div class="top-actions"><button class="icon-button" aria-label="Notifications">♧<span class="notification"></span></button><div class="avatar">AK</div></div>
+      </header>
+
+      <div class="dashboard dossier-view" id="dossier-view">
+        <div class="page-heading"><div><p class="eyebrow">INTELLIGENCE DOSSIER <span class="live-indicator"></span><span id="run-status">● COMPLETE</span></p><h1 id="company">NVIDIA Corporation <em>NVDA</em></h1><p class="subtitle">A synthesized view of public filings, market signals, and risk vectors.</p></div><div class="heading-actions"><button class="outline-button" id="refresh">↻ Refresh data</button><button class="primary-button">Export dossier <span>↗</span></button></div></div>
+        <div class="ticker-strip"><div><span class="ticker-label" id="ticker-label">NASDAQ · NVDA</span><strong id="ticker-price">$121.40</strong><span class="gain" id="ticker-change">+3.82%</span></div><div class="strip-item"><span>LAST UPDATED</span><strong>Live Yahoo Finance</strong></div><div class="strip-item"><span>CONFIDENCE</span><strong class="confidence">● LOCAL EDGE</strong></div><div class="strip-item"><span>DATA FRESHNESS</span><strong>On request</strong></div></div>
+        <div class="section-heading"><div><p class="eyebrow">01 / SEC FILINGS</p><h2>Capital matrix</h2></div><button class="text-button">View source ↗</button></div>
+        <div class="matrix-chart"><div class="chart-head"><div><span class="chart-title">Balance sheet trajectory</span><span class="chart-note">USD · billions</span></div><div class="legend"><span><i class="dot violet"></i>Assets</span><span><i class="dot lime"></i>Revenue</span></div></div><div class="chart-area"><div class="y-axis"><span>80</span><span>60</span><span>40</span><span>20</span><span>0</span></div><div class="chart"><div class="grid-lines"><i></i><i></i><i></i><i></i><i></i></div><svg viewBox="0 0 700 180" preserveAspectRatio="none" aria-label="Capital trend chart"><defs><linearGradient id="fillV" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#8b70ff" stop-opacity=".22"/><stop offset="1" stop-color="#8b70ff" stop-opacity="0"/></linearGradient></defs><path class="area" d="M0 140 L64 127 L127 132 L190 108 L254 115 L318 89 L381 93 L445 67 L508 73 L572 51 L636 56 L700 28 L700 180 L0 180Z"/><path class="line violet-line" d="M0 140 L64 127 L127 132 L190 108 L254 115 L318 89 L381 93 L445 67 L508 73 L572 51 L636 56 L700 28"/><path class="line lime-line" d="M0 155 L64 150 L127 146 L190 140 L254 133 L318 122 L381 115 L445 99 L508 105 L572 82 L636 75 L700 58"/></svg><div class="x-axis"><span>Q1 '22</span><span>Q3 '22</span><span>Q1 '23</span><span>Q3 '23</span><span>Q1 '24</span><span>Q4 '24</span></div></div></div><table class="capital-table"><thead><tr><th>Metric</th><th>Current</th><th>Prior</th><th>Delta</th></tr></thead><tbody id="capital-matrix"></tbody></table></div>
+        <div class="section-heading compact"><div><p class="eyebrow">02 / DERIVED METRICS</p><h2>Calculated ratios</h2></div><span class="calculated">ƒx SANDBOXED PYTHON</span></div>
+        <div class="ratio-grid" id="ratios"></div>
+        <div class="section-heading compact risks-heading"><div><p class="eyebrow">03 / EXTERNAL SIGNALS</p><h2>Risk vectors</h2></div><span class="news-source">◎ DuckDuckGo news sentiment</span></div>
+        <div class="risk-list" id="risks"></div>
+      </div>
+      <div class="dashboard secondary-view hidden" id="trace-view"><p class="eyebrow">AGENT TRACE / 04 EVENTS</p><h1>Reasoning observability</h1><div class="trace-log"><div><span>09:41:52</span><b>SEC filings adapter</b><em>10-K parsed · 1,842 tokens</em></div><div><span>09:41:54</span><b>Ratio sandbox</b><em>3 expressions evaluated · no side effects</em></div><div><span>09:41:55</span><b>Sentiment classifier</b><em>12 articles clustered · confidence 0.91</em></div><div><span>09:41:56</span><b>Dossier composer</b><em>Output validated against schema</em></div></div></div>
+      <div class="dashboard secondary-view hidden" id="sources-view"><p class="eyebrow">SOURCE REGISTRY / 12 CONNECTORS</p><h1>Evidence registry</h1><div class="source-grid"><div><strong>SEC 10-K</strong><span>Primary filing · FY 2024</span></div><div><strong>Reuters</strong><span>Market news · 4 articles</span></div><div><strong>NVIDIA IR</strong><span>Investor relations</span></div><div><strong>Bloomberg</strong><span>Market context · 3 articles</span></div></div></div>
+    </section>
+  </main>
+</body>
+</html>
