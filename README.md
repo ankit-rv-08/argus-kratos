@@ -169,14 +169,17 @@ python kratos_cli.py
 
 ---
 
+
+
 ## Roadmap
 
 - [x] Phase 1: LoRA fine-tuning, 4-bit quantization, and local Apple Metal MPS runtime.
 - [x] Phase 2: AST calculator sandboxing, dynamic ticker ingestion, and glassmorphic UI.
 - [x] Phase 3: Hybrid ReAct orchestrator integration and Rich telemetry stream.
+
+### Planned for v2.0
 - [ ] Phase 4: ChromaDB vector store integration for semantic search over SEC 10-K/10-Q filings.
 - [ ] Phase 5: Parallelized asynchronous batch processing for multi-ticker comparative intelligence.
-
 ---
 
 ## License
