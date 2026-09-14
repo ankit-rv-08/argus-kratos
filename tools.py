@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Callable
 
 from calculator import calculate
 from inference import analyze_context
@@ -39,7 +39,18 @@ def _headline(item: dict[str, Any]) -> str:
     return str(item.get("title") or content.get("title") or "Market update")
 
 
-def _risk_vectors(stock: Any) -> list[dict[str, str]]:
+def _safe_calculate(expression: str, values: dict[str, float]) -> float:
+    """Return a safe ratio default when dossier inputs are incomplete."""
+    try:
+        return calculate(expression, values)
+    except (KeyError, ValueError, ZeroDivisionError):
+        return 0.0
+
+
+def _risk_vectors(
+    stock: Any,
+    analyze_fn: Callable[[str], dict[str, Any]] = analyze_context,
+) -> list[dict[str, str]]:
     vectors: list[dict[str, str]] = []
     try:
         news_items = stock.news or []
@@ -47,7 +58,7 @@ def _risk_vectors(stock: Any) -> list[dict[str, str]]:
         news_items = []
     for item in news_items[:3]:
         title = _headline(item)
-        result = analyze_context(title)
+        result = analyze_fn(title)
         sentiment = str(result.get("sentiment", "Neutral")).upper()
         severity = "WATCH" if sentiment == "BEARISH" else "LOW"
         vectors.append({
@@ -103,9 +114,9 @@ def build_dossier_stream(ticker: str = "NVDA"):
     net_income = _billions(_statement_value(income_statement, ("Net Income", "Net Income Common Stockholders")))
 
     equity = equity or max(assets[0] - liabilities[0], 0.0)
-    debt_to_equity = calculate("debt / equity", {"debt": debt, "equity": equity}) if equity else 0.0
-    net_margin = calculate("net_income / revenue", {"net_income": net_income, "revenue": revenue[0]}) if revenue[0] else 0.0
-    roic = calculate("operating_income / equity", {"operating_income": operating_income[0], "equity": equity}) if equity else 0.0
+    debt_to_equity = _safe_calculate("debt / equity", {"debt": debt, "equity": equity}) if equity else 0.0
+    net_margin = _safe_calculate("net_income / revenue", {"net_income": net_income, "revenue": revenue[0]}) if revenue[0] else 0.0
+    roic = _safe_calculate("operating_income / equity", {"operating_income": operating_income[0], "equity": equity}) if equity else 0.0
 
     yield {"step": "kratos", "message": "Evaluating news context on local edge model"}
     risk_vectors = _risk_vectors(stock)
