@@ -6,7 +6,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from inference import analyze_context
-from tools import build_dossier
+from tools import build_dossier, build_dossier_stream
 
 ROOT = Path(__file__).parent
 
@@ -34,18 +34,12 @@ class Handler(BaseHTTPRequestHandler):
             return
         if path == "/api/stream":
             ticker = parse_qs(request.query).get("ticker", ["NVDA"])[0].upper()
-            events = [
-                {"step": "filings", "message": f"Fetching {ticker} SEC filing snapshot"},
-                {"step": "calculator", "message": "Running sandboxed AST ratio calculations"},
-                {"step": "kratos", "message": "Evaluating news context on local edge model"},
-                {"step": "complete", "message": "Dossier validated and ready"},
-            ]
             self.send_response(200)
             self.send_header("Content-Type", "text/event-stream")
             self.send_header("Cache-Control", "no-cache")
             self.send_header("Connection", "keep-alive")
             self.end_headers()
-            for event in events:
+            for event in build_dossier_stream(ticker):
                 self.wfile.write(f"data: {json.dumps(event)}\n\n".encode())
                 self.wfile.flush()
             return
