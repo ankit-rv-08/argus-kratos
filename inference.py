@@ -23,8 +23,38 @@ def load_model() -> Any:
     return Llama(model_path=str(MODEL_PATH), n_gpu_layers=-1, n_ctx=2048, verbose=False)
 
 
+def _parse_model_output(raw_text: str) -> dict[str, Any]:
+    """Parse model output without masking invalid classifications."""
+    try:
+        parsed = json.loads(raw_text)
+        parsed.setdefault("ticker", "NVDA")
+        parsed.setdefault("sentiment", "Neutral")
+        parsed.setdefault("risk_factor", raw_text.strip())
+        return parsed
+    except json.JSONDecodeError:
+        pass
+
+    start = raw_text.find("{")
+    end = raw_text.rfind("}")
+    if start >= 0 and end > start:
+        try:
+            parsed = json.loads(raw_text[start : end + 1])
+            parsed.setdefault("ticker", "NVDA")
+            parsed.setdefault("sentiment", "Neutral")
+            parsed.setdefault("risk_factor", raw_text.replace("<|im_tag|>", "").strip())
+            return parsed
+        except json.JSONDecodeError:
+            pass
+
+    return {
+        "ticker": "NVDA",
+        "sentiment": "Unparseable",
+        "risk_factor": f"Model did not return valid JSON: {raw_text[:120]!r}",
+        "parse_error": True,
+    }
+
+
 def analyze_context(context: str) -> dict[str, Any]:
-    """Run local JSON-constrained sentiment inference when the engine is available."""
     model = load_model()
     if model is None:
         return {
@@ -46,18 +76,7 @@ Context:
     result = model(prompt, max_tokens=60, temperature=0.1, stop=["<|im_end|>"])
     elapsed = time.perf_counter() - started
     raw_text = result["choices"][0]["text"].strip()
-    try:
-        parsed = json.loads(raw_text)
-    except json.JSONDecodeError:
-        start = raw_text.find("{")
-        end = raw_text.rfind("}")
-        try:
-            parsed = json.loads(raw_text[start : end + 1]) if start >= 0 and end > start else {}
-        except json.JSONDecodeError:
-            parsed = {}
-        parsed.setdefault("ticker", "NVDA")
-        parsed.setdefault("sentiment", "Neutral")
-        parsed.setdefault("risk_factor", raw_text.replace("<|im_tag|>", "").strip())
+    parsed = _parse_model_output(raw_text)
     usage = result.get("usage", {})
     parsed.update({"engine": "llama.cpp / Apple Metal", "tokens": usage.get("completion_tokens", 0), "elapsed": elapsed})
     return parsed
